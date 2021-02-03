@@ -1,4 +1,3 @@
-  
 import {canvas, IMAGES as images} from './initialize.js'
 import {ctx, drawObj, run, start, dT} from './initialize.js'
 
@@ -6,11 +5,11 @@ import {ctx, drawObj, run, start, dT} from './initialize.js'
 // PROPIEDADES> x, y, vX, vY, r, imagen
 // METODOS> dibujarse, moverse
 
-// Creo un array para almacenar todas las particulas
-let balones = []
+// Creo un array [] para almacenar todas las particulas
+let particulas = []
 
 // console.log(images)
-let Balon = {
+let particula = {
     //PROPIEDADES
     x:200,
     y:200,
@@ -20,13 +19,14 @@ let Balon = {
     // imagen: undefined,
     //METODOS
     dibujarse:function(){
-        // ctx.drawImage(this.imagen, this.x-this.r, this.y-this.r, 2*this.r, 2*this.r);
+        // dibuja un círculo
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 2*Math.PI, 0);
         ctx.fillStyle = "rgba(0,0,0,0.5)"
         ctx.stroke();
         ctx.fill();
     },
+    //Random y cambia variables para que haga la ilusión de moverse
     moverse:function(){
         this.x = this.x + this.vX * dT/1000;
         this.y = this.y + this.vY * dT/1000;
@@ -35,11 +35,13 @@ let Balon = {
 }
 
 drawObj.draw =  function(){
+    //eliminar lo anterior creador y seguir haciendo la ilusión
     ctx.clearRect(0, 0, 400, 400);
-    for (let balon of balones){
+    //para cada particula dentro de la bolsa se hacen los dos funciones
+    for (let particula of particulas){
         // console.log(particula)
-        balon.dibujarse()
-        balon.moverse()
+        particula.dibujarse()
+        particula.moverse()
     }
     // balon.dibujarse();
     // balon2.dibujarse()
@@ -48,20 +50,22 @@ drawObj.draw =  function(){
 }
 run()
 
-function crearParticula(){
-    let nuevoBalon = Object.create(Balon)
+function crearParticula(click){
+    let nuevaParticula = Object.create(particula)
     //asignar x, y, vX y vY
-    nuevoBalon.x = 200
-    nuevoBalon.y = 200
+    nuevaParticula.x = click.offsetX
+    //Sintaxis para que vaya a coordenada x de mouse cuando se haga click
+    nuevaParticula.y = click.offsetY
     // Genero el angulo de manera aleatoria
     // Math.random genera un numero aleatorio entre 0 y 1
     let ang = 2 * Math.PI * Math.random()
-    nuevoBalon.vX = 10 * Math.cos(ang)
-    nuevoBalon.vY = 10 * Math.sin(ang)
+    //esta es la direccion
+    nuevaParticula.vX = 400 * Math.cos(ang) * Math.random()
+    nuevaParticula.vY = 400 * Math.sin(ang) * Math.random()
 
     // añado el nuevo balón al array de balones
-    balones.push(nuevoBalon)
-    console.log(balones)
+    particulas.push(nuevaParticula)
+    console.log(particulas)
 }
 
 // Al hacer click se va a ejecutar la función crear partícula
